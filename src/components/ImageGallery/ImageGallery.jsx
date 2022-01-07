@@ -14,6 +14,8 @@ class ImageGallery extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
+      this.setState({ status: "pending" });
+
       try {
         const newImages = await fetchImages(this.props.query, this.state.page);
 
@@ -22,7 +24,7 @@ class ImageGallery extends Component {
             autoClose: 3000,
           });
         }
-        this.setState({ images: newImages.hits });
+        this.setState({ images: newImages.hits, status: "resolved" });
       } catch (error) {
         this.setState({ error, status: "rejected" });
       }
