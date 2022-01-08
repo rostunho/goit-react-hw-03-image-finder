@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { toast } from "react-toastify";
 import fetchImages from "../../services/api";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
+import Button from "../Button/Button";
 
 class ImageGallery extends Component {
   state = {
@@ -13,7 +14,7 @@ class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props) {
+    if (prevProps !== this.props || prevState !== this.state) {
       this.setState({ status: "pending" });
 
       try {
@@ -24,28 +25,41 @@ class ImageGallery extends Component {
             autoClose: 3000,
           });
         }
-        this.setState({ images: newImages.hits, status: "resolved" });
+        this.setState({
+          images: [...prevState.images, ...newImages.hits],
+          status: "resolved",
+        });
       } catch (error) {
         this.setState({ error, status: "rejected" });
       }
     }
   }
 
+  loadMorePictures = () => {
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   render() {
-    // console.log(this.state.images);
+    console.log(this.state.images);
 
     return (
       <>
         <ul className="gallery">
-          {this.state.images.map((image) => (
-            <ImageGalleryItem
-              key={image.id}
-              imageURL={image.webformatURL}
-              largeImageURL={image.largeImageURL}
-              tags={image.tags}
-            />
-          ))}
+          {this.state.images.map((image) => {
+            return (
+              <ImageGalleryItem
+                key={image.id}
+                // id={image.id}
+                imageURL={image.webformatURL}
+                largeImageURL={image.largeImageURL}
+                tags={image.tags}
+              />
+            );
+          })}
         </ul>
+        <Button loadMore={this.loadMorePictures} />
       </>
     );
   }
