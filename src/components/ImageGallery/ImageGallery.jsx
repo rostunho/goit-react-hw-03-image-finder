@@ -14,7 +14,7 @@ class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props || prevState !== this.state) {
+    if (prevProps !== this.props || prevState.page !== this.state.page) {
       this.setState({ status: "pending" });
 
       try {
@@ -24,11 +24,14 @@ class ImageGallery extends Component {
           return toast.error("This pictures do not exist", {
             autoClose: 3000,
           });
+        } else {
+          this.setState({
+            images: [...prevState.images, ...newImages.hits],
+            status: "resolved",
+          });
+
+          this.scrollToEnd();
         }
-        this.setState({
-          images: [...prevState.images, ...newImages.hits],
-          status: "resolved",
-        });
       } catch (error) {
         this.setState({ error, status: "rejected" });
       }
@@ -39,6 +42,13 @@ class ImageGallery extends Component {
     this.setState((prevState) => ({
       page: prevState.page + 1,
     }));
+  };
+
+  scrollToEnd = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
   render() {
