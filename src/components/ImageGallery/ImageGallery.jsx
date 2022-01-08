@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { toast } from "react-toastify";
-import fetchImages from "../../services/api";
+import api from "../../services/api";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 import Button from "../Button/Button";
 
@@ -13,47 +13,59 @@ class ImageGallery extends Component {
     status: "idle",
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props || prevState.page !== this.state.page) {
-      this.setState({ status: "pending" });
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props) {
+      this.setState({ images: [], page: 1 });
+    }
 
-      try {
-        const newImages = await fetchImages(this.props.query, this.state.page);
-
-        if (newImages.hits.length === 0) {
-          return toast.error("This pictures do not exist", {
-            autoClose: 3000,
-          });
-        } else {
-          this.setState({
-            images: [...prevState.images, ...newImages.hits],
-            status: "resolved",
-          });
-
-          console.log(document.body.scrollHeight);
-
-          if (newImages.hits.length > 0) {
-            window.scrollTo({
-              top: document.body.scrollHeight,
-              behavior: "smooth",
-            });
-          }
-        }
-      } catch (error) {
-        this.setState({ error, status: "rejected" });
-      }
+    if (
+      (prevProps !== this.props && this.state.page === 1) ||
+      prevState.page !== this.state.page
+    ) {
+      this.updateImageGallery();
     }
   }
 
-  loadMorePictures = () => {
+  updateImageGallery = async () => {
+    this.setState({ status: "pending" });
+
+    try {
+      const newImages = await api.fetchImages(
+        this.props.query,
+        this.state.page
+      );
+
+      if (newImages.hits.length === 0) {
+        return toast.error("This pictures do not exist", {
+          autoClose: 3000,
+        });
+      }
+
+      this.setState((state) => ({
+        images: [...state.images, ...newImages.hits],
+        status: "resolved",
+      }));
+    } catch (error) {
+      this.setState({ error: error.message, status: "rejected" });
+    }
+
+    this.scrollToBottom();
+  };
+
+  scrollToBottom = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  loadNextPage = () => {
     this.setState((prevState) => ({
       page: prevState.page + 1,
     }));
   };
 
   render() {
-    console.log(this.state.images);
-
     return (
       <>
         <ul className="gallery">
@@ -69,11 +81,10 @@ class ImageGallery extends Component {
             );
           })}
         </ul>
-        <Button loadMore={this.loadMorePictures} />
+        <Button loadMore={this.loadNextPage} />
       </>
     );
   }
 }
 
-// fetchImages("cat", 1);
 export default ImageGallery;

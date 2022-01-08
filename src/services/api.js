@@ -21,4 +21,8 @@ async function fetchImages(query, page) {
   }
 }
 
-export default fetchImages;
+const api = {
+  fetchImages,
+};
+
+export default api;
