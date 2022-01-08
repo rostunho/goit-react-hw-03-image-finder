@@ -14,11 +14,14 @@ class ImageGallery extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps !== this.props && this.state.page !== 1) {
+    if (prevProps !== this.props) {
       this.setState({ images: [], page: 1 });
     }
 
-    if (prevProps !== this.props || prevState.page !== this.state.page) {
+    if (
+      (prevProps !== this.props && this.state.page === 1) ||
+      prevState.page !== this.state.page
+    ) {
       this.updateImageGallery();
     }
   }
