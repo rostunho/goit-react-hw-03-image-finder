@@ -30,7 +30,14 @@ class ImageGallery extends Component {
             status: "resolved",
           });
 
-          this.scrollToEnd();
+          console.log(document.body.scrollHeight);
+
+          if (newImages.hits.length > 0) {
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+          }
         }
       } catch (error) {
         this.setState({ error, status: "rejected" });
@@ -42,13 +49,6 @@ class ImageGallery extends Component {
     this.setState((prevState) => ({
       page: prevState.page + 1,
     }));
-  };
-
-  scrollToEnd = () => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: "smooth",
-    });
   };
 
   render() {
