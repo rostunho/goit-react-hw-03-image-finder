@@ -1,18 +1,18 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { toast } from "react-toastify";
-import api from "../../services/api";
-import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
-import Button from "../Button/Button";
-import { Gallery } from "./ImageGallery.styled";
-import Modal from "../Modal/Modal";
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import Button from '../Button/Button';
+import { Gallery } from './ImageGallery.styled';
+import Modal from '../Modal/Modal';
 
 class ImageGallery extends Component {
   state = {
     images: [],
     page: 1,
     error: null,
-    status: "idle",
+    status: 'idle',
     showModal: false,
     largeImageURL: null,
     currentTags: null,
@@ -34,12 +34,12 @@ class ImageGallery extends Component {
   }
 
   updateImageGallery = async () => {
-    this.setState({ status: "pending" });
+    this.setState({ status: 'pending' });
 
     try {
       const newImages = await api.fetchImages(
         this.props.query,
-        this.state.page
+        this.state.page,
       );
 
       if (newImages.hits.length === 0 && this.state.images.length === 0) {
@@ -54,14 +54,14 @@ class ImageGallery extends Component {
         });
       }
 
-      this.setState((state) => ({
+      this.setState(state => ({
         images: [...state.images, ...newImages.hits],
-        status: "resolved",
+        status: 'resolved',
       }));
 
       // console.log("2");
     } catch (error) {
-      this.setState({ error: error.message, status: "rejected" });
+      this.setState({ error: error.message, status: 'rejected' });
     }
 
     this.scrollToBottom();
@@ -70,17 +70,17 @@ class ImageGallery extends Component {
   scrollToBottom = () => {
     window.scrollTo({
       top: document.body.scrollHeight,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
   loadNextPage = () => {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       page: prevState.page + 1,
     }));
   };
 
-  openModal = (event) => {
+  openModal = event => {
     this.setState({
       showModal: true,
       largeImageURL: event.target.dataset.src,
@@ -102,7 +102,7 @@ class ImageGallery extends Component {
     return (
       <>
         <Gallery>
-          {images.map((image) => {
+          {images.map(image => {
             return (
               <ImageGalleryItem
                 key={image.id}
