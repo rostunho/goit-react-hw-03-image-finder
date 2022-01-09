@@ -22,6 +22,7 @@ class ImageGallery extends Component {
     showModal: false,
     largeImageURL: null,
     currentTags: null,
+    spinnerOverlayColor: 'rgba(0, 0, 0, 0.5)',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -65,7 +66,7 @@ class ImageGallery extends Component {
       }));
     } catch (error) {
       this.setState({ error: error.message, status: 'rejected' });
-      toast.error(error.message);
+      toast.error(this.state.error);
     }
 
     this.scrollToBottom();
@@ -84,11 +85,19 @@ class ImageGallery extends Component {
     }));
   };
 
+  changeStatus = newStatus => {
+    this.setState({ status: newStatus });
+  };
+
   openModal = event => {
+    // this.changeSpinnerOverlay('transparent');
+
     this.setState({
       showModal: true,
       largeImageURL: event.target.dataset.src,
       currentTags: event.target.dataset.alt,
+      status: 'pending',
+      spinnerOverlayColor: 'transparent',
     });
   };
 
@@ -97,12 +106,19 @@ class ImageGallery extends Component {
       showModal: false,
       largeImageURL: null,
       currentTags: null,
+      spinnerOverlayColor: 'rgba(0, 0, 0, 0.5)',
     });
   };
 
   render() {
-    const { images, showModal, largeImageURL, currentTags, status } =
-      this.state;
+    const {
+      images,
+      showModal,
+      largeImageURL,
+      currentTags,
+      status,
+      spinnerOverlayColor,
+    } = this.state;
 
     return (
       <>
@@ -123,11 +139,12 @@ class ImageGallery extends Component {
         {showModal && (
           <Modal
             closeModal={this.closeModal}
+            changeStatus={this.changeStatus}
             largeImage={largeImageURL}
             tags={currentTags}
           />
         )}
-        {status === 'pending' && <Spinner />}
+        {status === 'pending' && <Spinner bgColor={spinnerOverlayColor} />}
       </>
     );
   }

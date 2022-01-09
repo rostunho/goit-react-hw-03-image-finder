@@ -12,10 +12,18 @@ class Modal extends Component {
 
   componentDidMount() {
     window.addEventListener('keydown', this.onPressEsc);
+
+    document
+      .getElementById('large-img')
+      .addEventListener('load', this.onLoadImage);
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onPressEsc);
+
+    document
+      .getElementById('large-img')
+      .removeEventListener('load', this.onLoadImage);
   }
 
   onPressEsc = event => {
@@ -30,11 +38,19 @@ class Modal extends Component {
     }
   };
 
+  onLoadImage = () => {
+    this.props.changeStatus('resolved');
+  };
+
   render() {
     return createPortal(
       <Overlay onClick={this.onBackdropClick}>
         <ModalBox>
-          <img src={this.props.largeImage} alt={this.props.tags} />
+          <img
+            id="large-img"
+            src={this.props.largeImage}
+            alt={this.props.tags}
+          />
         </ModalBox>
       </Overlay>,
       document.getElementById('modal-root'),
