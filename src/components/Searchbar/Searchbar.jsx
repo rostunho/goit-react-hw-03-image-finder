@@ -1,39 +1,44 @@
-import React, { Component } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { FaSearch } from "react-icons/fa";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FaSearch } from 'react-icons/fa';
 import {
   Header,
   Form,
   Input,
   SearchButton,
   ButtonLabel,
-} from "./Searchbar.styled";
+} from './Searchbar.styled';
 
 class Searchbar extends Component {
-  state = {
-    query: "",
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
   };
 
-  handleInput = (event) => {
+  state = {
+    query: '',
+  };
+
+  handleInput = event => {
     // console.log(event.target.value);
     this.setState({ query: event.target.value });
   };
 
-  onSubmitForm = (event) => {
+  onSubmitForm = event => {
     event.preventDefault();
     const { query } = this.state;
     // console.log(query);
-    if (query.trim() === "") {
-      return toast.warn("Your search query is empty", {
-        position: "top-right",
+    if (query.trim() === '') {
+      return toast.warn('Your search query is empty', {
+        position: 'top-right',
         autoClose: 3000,
       });
     }
 
     this.props.onSubmit(query);
-    event.target.value = "";
-    this.setState({ query: "" });
+    event.target.value = '';
+    this.setState({ query: '' });
   };
 
   render() {

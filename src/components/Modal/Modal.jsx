@@ -1,23 +1,30 @@
-import React, { Component } from "react";
-import { createPortal } from "react-dom";
-import { Overlay, ModalBox } from "./Modal.styled";
+import React, { Component } from 'react';
+import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
+import { Overlay, ModalBox } from './Modal.styled';
 
 class Modal extends Component {
+  static propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    largeImage: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+  };
+
   componentDidMount() {
-    window.addEventListener("keydown", this.onPressEsc);
+    window.addEventListener('keydown', this.onPressEsc);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.onPressEsc);
+    window.removeEventListener('keydown', this.onPressEsc);
   }
 
-  onPressEsc = (event) => {
-    if (event.code === "Escape") {
+  onPressEsc = event => {
+    if (event.code === 'Escape') {
       this.props.closeModal();
     }
   };
 
-  onBackdropClick = (event) => {
+  onBackdropClick = event => {
     if (event.target === event.currentTarget) {
       this.props.closeModal();
     }
@@ -30,7 +37,7 @@ class Modal extends Component {
           <img src={this.props.largeImage} alt={this.props.tags} />
         </ModalBox>
       </Overlay>,
-      document.getElementById("modal-root")
+      document.getElementById('modal-root'),
     );
   }
 }

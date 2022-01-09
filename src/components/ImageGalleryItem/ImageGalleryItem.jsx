@@ -1,4 +1,5 @@
-import { Item, Image } from "./ImageGalleryItem.styled";
+import PropTypes from 'prop-types';
+import { Item, Image } from './ImageGalleryItem.styled';
 
 function ImageGalleryItem({ imageURL, largeImageURL, tags, openModal }) {
   return (
@@ -13,5 +14,12 @@ function ImageGalleryItem({ imageURL, largeImageURL, tags, openModal }) {
     </Item>
   );
 }
+
+ImageGalleryItem.propTypes = {
+  imageURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
+};
 
 export default ImageGalleryItem;
