@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaSearch } from "react-icons/fa";
+import {
+  Header,
+  Form,
+  Input,
+  SearchButton,
+  ButtonLabel,
+} from "./Searchbar.styled";
 
 class Searchbar extends Component {
   state = {
@@ -32,10 +40,9 @@ class Searchbar extends Component {
     const { query } = this.state;
     // console.log(this.props);
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.onSubmitForm}>
-          <input
-            className="input"
+      <Header>
+        <Form onSubmit={this.onSubmitForm}>
+          <Input
             type="text"
             autoComplete="off"
             autoFocus
@@ -44,11 +51,12 @@ class Searchbar extends Component {
             onChange={this.handleInput}
           />
 
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
-          </button>
-        </form>
-      </header>
+          <SearchButton type="submit">
+            <FaSearch size="24" />
+            <ButtonLabel>Search</ButtonLabel>
+          </SearchButton>
+        </Form>
+      </Header>
     );
   }
 }

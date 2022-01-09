@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import api from "../../services/api";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 import Button from "../Button/Button";
+import { Gallery } from "./ImageGallery.styled";
 
 class ImageGallery extends Component {
   state = {
@@ -16,6 +17,8 @@ class ImageGallery extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       this.setState({ images: [], page: 1 });
+      // console.log("1");
+      // this.updateImageGallery();
     }
 
     if (
@@ -35,8 +38,14 @@ class ImageGallery extends Component {
         this.state.page
       );
 
-      if (newImages.hits.length === 0) {
-        return toast.error("This pictures do not exist", {
+      if (newImages.hits.length === 0 && this.state.images.length === 0) {
+        return toast.error(`"${this.props.query}"pictures do not exist`, {
+          autoClose: 3000,
+        });
+      }
+
+      if (newImages.hits.length === 0 && this.state.images.length !== 0) {
+        return toast.info(`There are all pictures of "${this.props.query}"`, {
           autoClose: 3000,
         });
       }
@@ -45,6 +54,8 @@ class ImageGallery extends Component {
         images: [...state.images, ...newImages.hits],
         status: "resolved",
       }));
+
+      // console.log("2");
     } catch (error) {
       this.setState({ error: error.message, status: "rejected" });
     }
@@ -66,10 +77,12 @@ class ImageGallery extends Component {
   };
 
   render() {
+    const { images } = this.state;
+
     return (
       <>
-        <ul className="gallery">
-          {this.state.images.map((image) => {
+        <Gallery>
+          {images.map((image) => {
             return (
               <ImageGalleryItem
                 key={image.id}
@@ -80,8 +93,8 @@ class ImageGallery extends Component {
               />
             );
           })}
-        </ul>
-        <Button loadMore={this.loadNextPage} />
+        </Gallery>
+        {images.length !== 0 && <Button loadMore={this.loadNextPage} />}
       </>
     );
   }

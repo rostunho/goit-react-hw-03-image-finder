@@ -1,8 +1,10 @@
+import { Item, Image } from "./ImageGalleryItem.styled";
+
 function ImageGalleryItem({ imageURL, largeImageURL, tags }) {
   return (
-    <li className="gallery-item">
-      <img src={imageURL} alt={tags} />
-    </li>
+    <Item className="gallery-item">
+      <Image src={imageURL} alt={tags} />
+    </Item>
   );
 }
 
