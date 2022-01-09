@@ -6,6 +6,7 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Button from '../Button/Button';
 import { Gallery } from './ImageGallery.styled';
 import Modal from '../Modal/Modal';
+import Spinner from 'components/Loader/Loader';
 
 class ImageGallery extends Component {
   state = {
@@ -34,7 +35,7 @@ class ImageGallery extends Component {
   }
 
   updateImageGallery = async () => {
-    this.setState({ status: 'pending' });
+    this.setState({ status: 'pending', error: null });
 
     try {
       const newImages = await api.fetchImages(
@@ -43,12 +44,15 @@ class ImageGallery extends Component {
       );
 
       if (newImages.hits.length === 0 && this.state.images.length === 0) {
+        this.setState({ status: 'rejected' });
+
         return toast.error(`"${this.props.query}"pictures do not exist`, {
           autoClose: 3000,
         });
       }
 
-      if (newImages.hits.length === 0 && this.state.images.length !== 0) {
+      if (newImages.hits.length < 12 && this.state.images.length !== 0) {
+        this.setState({ status: 'rejected' });
         return toast.info(`There are all pictures of "${this.props.query}"`, {
           autoClose: 3000,
         });
@@ -62,6 +66,7 @@ class ImageGallery extends Component {
       // console.log("2");
     } catch (error) {
       this.setState({ error: error.message, status: 'rejected' });
+      toast.error(error.message);
     }
 
     this.scrollToBottom();
@@ -97,7 +102,8 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { images, showModal, largeImageURL, currentTags } = this.state;
+    const { images, showModal, largeImageURL, currentTags, status } =
+      this.state;
 
     return (
       <>
@@ -123,6 +129,7 @@ class ImageGallery extends Component {
             tags={currentTags}
           />
         )}
+        {status === 'pending' && <Spinner />}
       </>
     );
   }
