@@ -5,6 +5,7 @@ import api from "../../services/api";
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 import Button from "../Button/Button";
 import { Gallery } from "./ImageGallery.styled";
+import Modal from "../Modal/Modal";
 
 class ImageGallery extends Component {
   state = {
@@ -12,6 +13,9 @@ class ImageGallery extends Component {
     page: 1,
     error: null,
     status: "idle",
+    showModal: false,
+    largeImageURL: null,
+    currentTags: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -76,8 +80,24 @@ class ImageGallery extends Component {
     }));
   };
 
+  openModal = (event) => {
+    this.setState({
+      showModal: true,
+      largeImageURL: event.target.dataset.src,
+      currentTags: event.target.dataset.alt,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      showModal: false,
+      largeImageURL: null,
+      currentTags: null,
+    });
+  };
+
   render() {
-    const { images } = this.state;
+    const { images, showModal, largeImageURL, currentTags } = this.state;
 
     return (
       <>
@@ -90,11 +110,19 @@ class ImageGallery extends Component {
                 imageURL={image.webformatURL}
                 largeImageURL={image.largeImageURL}
                 tags={image.tags}
+                openModal={this.openModal}
               />
             );
           })}
         </Gallery>
         {images.length !== 0 && <Button loadMore={this.loadNextPage} />}
+        {showModal && (
+          <Modal
+            closeModal={this.closeModal}
+            largeImage={largeImageURL}
+            tags={currentTags}
+          />
+        )}
       </>
     );
   }
