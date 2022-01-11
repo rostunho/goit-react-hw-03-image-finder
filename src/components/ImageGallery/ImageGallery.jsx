@@ -22,7 +22,6 @@ class ImageGallery extends Component {
     showModal: false,
     largeImageURL: null,
     currentTags: null,
-    spinnerOverlayColor: 'rgba(0, 0, 0, 0.5)',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -69,7 +68,7 @@ class ImageGallery extends Component {
       toast.error(this.state.error);
     }
 
-    this.scrollToBottom();
+    if (page !== 1) this.scrollToBottom();
   };
 
   scrollToBottom = () => {
@@ -111,14 +110,12 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const {
-      images,
-      showModal,
-      largeImageURL,
-      currentTags,
-      status,
-      spinnerOverlayColor,
-    } = this.state;
+    const { images, showModal, largeImageURL, currentTags, status } =
+      this.state;
+
+    const spinnerOverlayColor = showModal
+      ? 'transparent'
+      : 'rgba(0, 0, 0, 0.5)';
 
     return (
       <>
