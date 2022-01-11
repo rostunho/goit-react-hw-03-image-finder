@@ -89,14 +89,11 @@ class ImageGallery extends Component {
   };
 
   openModal = event => {
-    // this.changeSpinnerOverlay('transparent');
-
     this.setState({
       showModal: true,
       largeImageURL: event.target.dataset.src,
       currentTags: event.target.dataset.alt,
       status: 'pending',
-      spinnerOverlayColor: 'transparent',
     });
   };
 
@@ -105,7 +102,6 @@ class ImageGallery extends Component {
       showModal: false,
       largeImageURL: null,
       currentTags: null,
-      spinnerOverlayColor: 'rgba(0, 0, 0, 0.5)',
     });
   };
 
